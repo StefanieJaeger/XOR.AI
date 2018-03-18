@@ -9,143 +9,74 @@ namespace XOR.AI
 {
     class Program
     {
-        private static List<double> connections;
-        private static int I0 = 1;
-        private static int H0 = 1;
+        private static List<Chromosome> roulette = new List<Chromosome>();
+        private static List<Chromosome> gen1 = new List<Chromosome>();
+        private  static List<Chromosome> gen2 = new List<Chromosome>();
+        private static Random ran;
 
         static void Main(string[] args)
         {
-            connections = new List<double>();
+            ran = new Random();
+            populateRoulette();
+            Chromosome mom = roulette[ran.Next(roulette.Count)];
+            Chromosome dad = roulette[ran.Next(roulette.Count)];
 
-            Random ran = new Random(Guid.NewGuid().GetHashCode());
-            int fitness = 0;
+            makeBabies(mom, dad);
+        }
 
-            for (int i = 0; i < 9; i++)
+        private static void makeBabies(Chromosome mom, Chromosome dad)
+        {
+            int chromosoneCount = mom.getConnections().Count;
+            int rate = ran.Next(chromosoneCount);
+            List<double> connections1 = new List<double>();
+            List<double> connections2 = new List<double>();
+
+            for (int i = 0; i < rate; i++)
             {
-                double random = (ran.NextDouble() * 2) - 1;
-                connections.Add(random);
+                connections1.Add(mom.getConnections()[i]);
+                connections2.Add(dad.getConnections()[i]);
+            }
+            for (int i = rate; i < chromosoneCount; i++)
+            {
+                connections2.Add(mom.getConnections()[i]);
+                connections1.Add(dad.getConnections()[i]);
             }
 
-            if (checkResult(1, Case1()))
-                fitness++;
-            if (checkResult(2, Case2()))
-                fitness++;
-            if (checkResult(3, Case3()))
-                fitness++;
-            if (checkResult(4, Case4()))
-                fitness++;
+            Chromosome chromosome1 = new Chromosome(connections1);
+            Chromosome chromosome2 = new Chromosome(connections2);
 
-            Console.WriteLine("**********");
-            Console.WriteLine();
-            Console.WriteLine("Fitness: " + fitness + "/4");
-            Console.WriteLine();
+            gen2.Add(chromosome1);
+            gen2.Add(chromosome2);
+        }
 
-            foreach (double connection in connections)
+        private static void populateRoulette()
+        {
+            Chromosome chromosome1 = new Chromosome();
+            Chromosome chromosome2 = new Chromosome();
+            Chromosome chromosome3 = new Chromosome();
+            Chromosome chromosome4 = new Chromosome();
+
+            gen1.Add(chromosome1);
+            gen1.Add(chromosome2);
+            gen1.Add(chromosome3);
+            gen1.Add(chromosome4);
+
+            for (int i = 0; i < chromosome1.getFitness(); i++)
             {
-                Console.WriteLine(connection);
+                roulette.Add(chromosome1);
             }
-
-            Console.WriteLine();
-            Console.WriteLine("**********");
-            Console.Read();
-
-            //if (fitness != 4)
-            //{
-            //    Main(new string[0]);
-            //}
-
-        }
-
-        /// <summary>
-        /// Case 1 checks values 0 and 0, should return 0 respectively a negativ number
-        /// </summary>
-        /// <returns> a positive or negative number</returns>
-        private static double Case1()
-        {
-            int I1 = 0;
-            int I2 = 0;
-
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
-
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
-
-            return O;
-        }
-
-        /// <summary>
-        /// Case 1 checks values 0 and 0, should return 0 respectively a negativ number
-        /// </summary>
-        /// <returns> a positive or negative number</returns>
-        private static double Case2()
-        {
-            int I1 = 0;
-            int I2 = 1;
-
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
-
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
-
-            return O;
-        }
-
-        /// <summary>
-        /// Case 1 checks values 0 and 0, should return 0 respectively a negativ number
-        /// </summary>
-        /// <returns> a positive or negative number</returns>
-        private static double Case3()
-        {
-            int I1 = 1;
-            int I2 = 0;
-
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
-
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
-
-            return O;
-        }
-
-        /// <summary>
-        /// Case 1 checks values 0 and 0, should return 0 respectively a negativ number
-        /// </summary>
-        /// <returns> a positive or negative number</returns>
-        private static double Case4()
-        {
-            int I1 = 1;
-            int I2 = 1;
-
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
-
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
-
-            return O;
-        }
-
-        /// <summary>
-        /// Checks each case's result with the expected one
-        /// </summary>
-        /// <param name="caseNr"> the case number (1 to 4) </param>
-        /// <param name="result"> the result of the case </param>
-        /// <returns> whether the case gave the correct result or not </returns>
-        private static bool checkResult(int caseNr, double result)
-        {
-            switch (caseNr)
+            for (int i = 0; i < chromosome2.getFitness(); i++)
             {
-                case 1:
-                    return result < 0;
-                case 2:
-                    return result > 0;
-                case 3:
-                    return result > 0;
-                case 4:
-                    return result < 0;
-                default:
-                    return false; //no value given
+                roulette.Add(chromosome2);
             }
+            for (int i = 0; i < chromosome3.getFitness(); i++)
+            {
+                roulette.Add(chromosome3);
+            }
+            for (int i = 0; i < chromosome4.getFitness(); i++)
+            {
+                roulette.Add(chromosome4);
+            } 
         }
-
-        }
+    }
 }
