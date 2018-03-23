@@ -11,26 +11,55 @@ namespace XOR.AI
     {
         private static List<Chromosome> roulette = new List<Chromosome>();
         private static List<Chromosome> gen1 = new List<Chromosome>();
-        private  static List<Chromosome> gen2 = new List<Chromosome>();
+        private static List<Chromosome> gen2 = new List<Chromosome>();
         private static Chromosome[] parents = new Chromosome[2];
         private static Random ran;
+        private static int minFitness;
 
         static void Main(string[] args)
         {
-            populateRoulette();
-            chooseParents();
+            Console.WriteLine("What do you want to do? Try a bit? t Get gen for certain fitness? [number]");
+            string answer = Console.ReadLine();
+            int result = 0;
+            if (answer == "t" || answer == "") //normal routine
+            {
+                populateRoulette();
+                chooseParents();
 
-            makeBabies(parents[0], parents[1]);
-            giveResults(parents[0], parents[1]);
+                makeBabies(parents[0], parents[1]);
+                giveResults(parents[0], parents[1]);
+            }
+            else if (int.TryParse(answer, out result))
+            { //try until a child has the right fitness
+                populateRoulette();
+                int count1 = 0;
+                int count2;
+                do
+                {
+                    count2 = 0;
+                    count1++;
+                    chooseParents();
+                    do
+                    {
+                        makeBabies(parents[0], parents[1]);
+                        count2++;
+                    } while (count2 < 5 && gen2[0].getFitness() < result && gen2[1].getFitness() < result);
+                } while (count1 < 5 && gen2[0].getFitness() < result && gen2[1].getFitness() < result);
+                if (count1 >= 5)
+                    Console.WriteLine("Tried, but couldn't with these parents. Start new please");
+                giveResults(parents[0], parents[1]);
+            }
         }
 
-        private static void chooseParents() {
+        private static void chooseParents()
+        {
             ran = new Random();
             parents[0] = roulette[ran.Next(roulette.Count)];
             parents[1] = roulette[ran.Next(roulette.Count)];
         }
 
-        private static void giveResults(Chromosome mom, Chromosome dad, bool showStats = true) {
+        private static void giveResults(Chromosome mom, Chromosome dad, bool showStats = true)
+        {
             if (showStats)
             {
                 Console.WriteLine("mom: " + mom.getFitness());
@@ -67,7 +96,8 @@ namespace XOR.AI
             }
         }
 
-        private static void showGens(string who) {
+        private static void showGens(string who)
+        {
             if (who == "m")
             {
                 Console.WriteLine("[{0}]", string.Join(", ", parents[0].getRoundedConnections()));
@@ -145,7 +175,7 @@ namespace XOR.AI
             for (int i = 0; i < chromosome4.getFitness(); i++)
             {
                 roulette.Add(chromosome4);
-            } 
+            }
         }
     }
 }
