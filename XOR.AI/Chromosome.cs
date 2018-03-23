@@ -14,15 +14,16 @@ namespace XOR.AI
         public Chromosome()
         {
             connections = new List<double>();
-
             Random ran = new Random(Guid.NewGuid().GetHashCode());
 
+            //add for random decimals to the gen string
             for (int i = 0; i < 9; i++)
             {
                 double random = (ran.NextDouble() * 2) - 1;
                 connections.Add(random);
             }
 
+            //check for each case if the number gives the correct result, add a point if it does
             if (checkResult(1, Case1()))
                 fitness++;
             if (checkResult(2, Case2()))
@@ -66,6 +67,14 @@ namespace XOR.AI
             return fitness;
         }
 
+        public List<int> getRoundedConnections() {
+            List<int> rounded = new List<int>();
+            foreach (double con in connections) {
+                rounded.Add((int)Math.Ceiling(con));
+            }
+            return rounded;
+        }
+
         public List<double> getConnections()
         {
             return connections;
@@ -80,10 +89,10 @@ namespace XOR.AI
             int I1 = 0;
             int I2 = 0;
 
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
+            double H1 = (connections[0] * I0 + connections[1] * I1 + connections[2] * I2) / 3;
+            double H2 = (connections[3] * I0 + connections[4] * I1 + connections[5] * I2) / 3;
 
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
+            double O = (H0 * connections[6] + H1 * connections[7] + H2 * connections[8]) / 3;
 
             return O;
         }
@@ -97,10 +106,10 @@ namespace XOR.AI
             int I1 = 0;
             int I2 = 1;
 
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
+            double H1 = (connections[0] * I0 + connections[1] * I1 + connections[2] * I2)/3;
+            double H2 = (connections[3] * I0 + connections[4] * I1 + connections[5] * I2)/3;
 
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
+            double O = (H0 * connections[6] + H1 * connections[7] + H2 * connections[8]) / 3;
 
             return O;
         }
@@ -114,10 +123,10 @@ namespace XOR.AI
             int I1 = 1;
             int I2 = 0;
 
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
+            double H1 = (connections[0] * I0 + connections[1] * I1 + connections[2] * I2) / 3;
+            double H2 = (connections[3] * I0 + connections[4] * I1 + connections[5] * I2) / 3;
 
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
+            double O = (H0 * connections[6] + H1 * connections[7] + H2 * connections[8]) / 3;
 
             return O;
         }
@@ -131,10 +140,10 @@ namespace XOR.AI
             int I1 = 1;
             int I2 = 1;
 
-            double H1 = connections[0] * I0 + connections[1] * I1 + connections[2] * I2;
-            double H2 = connections[3] * I0 + connections[4] * I1 + connections[5] * I2;
+            double H1 = (connections[0] * I0 + connections[1] * I1 + connections[2] * I2) / 3;
+            double H2 = (connections[3] * I0 + connections[4] * I1 + connections[5] * I2) / 3;
 
-            double O = H0 * connections[6] + H1 * connections[7] + H2 * connections[8];
+            double O = (H0 * connections[6] + H1 * connections[7] + H2 * connections[8])/3;
 
             return O;
         }
